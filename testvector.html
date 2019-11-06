@@ -14,378 +14,68 @@
 	</head>
 	
 	<body>
-        <canvas id="game" width="200" height="100"></canvas>
-		
+        <canvas id="game" width="100" height="100"></canvas>
+		<img src="player.bmp" id="imagee">
 		<script>
 			var c = document.getElementById("game");
 			var ctx = c.getContext("2d");
-			
-			var leftTopX = 100;
-			var leftTopY = 50;
-			
-			var rightTopX = 100;
-			var rightTopY = 50;
-			
-			var leftBottX = 100;
-			var leftBottY = 50;
-			
-			var rightBottX = 100;
-			var rightBottY = 50;
-			
-			var leftTopWall = 0;
-			
-			var rightTopWall = 200;
-			
-			var leftBottWall = 0;
-			
-			var rightBottWall = 200;
-            
-            var edgeTopLeftX = 0
-            var edgeTopLeftY = 0
-            var edgeTopRightX = 200
-            var edgeTopRightY = 0
-            
-            var edgeBottLeftX = 0
-            var edgeBottLeftY = 100
-            var edgeBottRightX = 200
-            var edgeBottRightY = 100
+			ctx.translate(0.5, 0.5);
             
             
-            var pedgeTopLeftX = 0
-            var pedgeTopLeftY = 0
-            var pedgeTopRightX = 200
-            var pedgeTopRightY = 0
+            var player = {x:20, y:10, ang: 0}
+            var viewend = {x:0, y:0}
+            var viewleft = {x:0, y:0}
+            var viewright = {x:0, y:0}
             
-            var pedgeBottLeftX = 0
-            var pedgeBottLeftY = 100
-            var pedgeBottRightX = 200
-            var pedgeBottRightY = 100
+            var vert1 = {x:0,y:0};
             
-			var k = setInterval(keys, 0);
-			function keys() {
-				if(left === true) {
-					leftkey();
-				}
-				
-				if(right === true) {
-					rightkey();
-					
-				}
-				
-				if(up === true) {
-					upkey();
-					
-				}
-				
-				if(down === true) {
-					downkey();
-					
-				}
-			}
-			
-			var m = setInterval(movekeys, 50);
-			function movekeys() {
-				if(w === true) {
-					wkey();
-					
-				}
-				if(s === true) {
-					skey();
-					
-				}
-                
-                if (a == true) {
-                    akey();
-                }
-                
-                if (d == true) {
-                    dkey();
-                }
-                
-                if (space == true) {
-                    spacekey();
-                }
-                
-                if (c == true) {
-                    ckey();
-                }
-			}
-
-			var r = setInterval(render,0);
-			function render() {
-				ctx.beginPath();
-                ctx.fillStyle = "black";
-                ctx.fillRect(0,0,200,100);
-                
-                
-				ctx.beginPath();
-				ctx.fillStyle = "lightgray";
-				ctx.moveTo(edgeTopLeftX, edgeTopLeftY);
-				//ctx.lineTo(leftTopWall, 0);
-				ctx.lineTo(leftTopX, leftTopY);
-				ctx.lineTo(leftBottX, leftBottY);
-                ctx.lineTo(edgeBottLeftX, edgeBottLeftY);				
-                //ctx.lineTo(leftBottWall, edge);
-                ctx.lineTo(edgeTopLeftX, edgeTopLeftY);
-				
-				ctx.fill();
-				
-				ctx.beginPath();
-				ctx.fillStyle = "lightblue";
-				ctx.moveTo(edgeTopLeftX, edgeTopLeftY);
-				ctx.lineTo(leftTopX, leftTopY);
-				ctx.lineTo(rightTopX, rightTopY);
-				ctx.lineTo(edgeTopRightX, edgeTopRightY);
-				ctx.lineTo(edgeTopLeftX, edgeTopLeftY);
-				ctx.fill();
-				
-				ctx.beginPath();
-				ctx.fillStyle = "red";
-				ctx.moveTo(edgeTopRightX, edgeTopRightY);
-				ctx.lineTo(rightTopX, rightTopY);
-				ctx.lineTo(rightBottX, rightBottY);
-				ctx.lineTo(edgeBottRightX, edgeBottRightY);
-				ctx.lineTo(edgeTopRightX, edgeTopRightY);
-				ctx.fill();
-				
-				ctx.beginPath();
-				ctx.fillStyle = "green";
-				ctx.lineTo(edgeBottRightX, edgeBottRightY);
-				ctx.lineTo(rightBottX, rightBottY);
-				ctx.lineTo(leftBottX, leftBottY);
-				ctx.lineTo(edgeBottLeftX, edgeBottLeftY);
-				ctx.lineTo(edgeBottRightX, edgeBottRightY);
-				ctx.fill();
-			
-				ctx.beginPath();
-				ctx.fillStyle = "grey";
-				ctx.moveTo(rightTopX, rightTopY);
-				ctx.lineTo(leftTopX, leftTopY);
-				ctx.lineTo(leftBottX, leftBottY);
-				ctx.lineTo(rightBottX, rightBottY);
-				ctx.lineTo(rightTopX, rightTopY);
-				ctx.fill();
-				
-				
-			}
-			
-
-			var speedMul = 1;
-			var moveSpeed = 1;
-			function wkey() {
-				leftTopX = leftTopX - 1;
-				leftTopY = leftTopY - 1;
-				
-				rightTopX = rightTopX + 1;
-				rightTopY = rightTopY - 1;
-				
-				leftBottX = leftBottX - 1;
-				leftBottY = leftBottY + 1;
-				
-				rightBottX = rightBottX + 1;
-				rightBottY = rightBottY + 1;
-                
-			}
-			
-			function skey() {
-				leftTopX = leftTopX + 1;
-				leftTopY = leftTopY + 1;
-				
-				rightTopX = rightTopX - 1;
-				rightTopY = rightTopY + 1;
-				
-				leftBottX = leftBottX + 1;
-				leftBottY = leftBottY - 1;
-				
-				rightBottX = rightBottX - 1;
-				rightBottY = rightBottY - 1;
-                
-			}
             
-            function akey() {
-                edgeTopLeftX = edgeTopLeftX + 10;
-                edgeTopRightX = edgeTopRightX + 10
-                edgeBottLeftX = edgeBottLeftX + 10
-                edgeBottRightX = edgeBottRightX + 10
+            
+            function setview() {
+                viewend.x = player.x - 10 * Math.cos(player.ang);
+                viewend.y = player.y - 10 * Math.sin(player.ang);
+                
+                viewleft.x = player.x - 10 * Math.cos(player.ang - 1);
+                viewleft.y = player.y - 10 * Math.sin(player.ang - 1);
+                
+                viewright.x = player.x - 10 * Math.cos(player.ang + 1);
+                viewright.y = player.y - 10 * Math.sin(player.ang + 1);
+            }
+            
+            
+            setInterval(function(){ render(); }, 10);
+            function render() {
+                ctx.clearRect(0, 0, 50, 50);
+                
+                setview();
+                
+                ctx.beginPath();
+                ctx.fillStyle = "blue";
+                
+                ctx.moveTo(player.x,player.y);
+                ctx.lineTo(viewend.x,viewend.y);
+                ctx.stroke();
+                
+                ctx.fillStyle = "yellow";
+            
+                ctx.moveTo(player.x,player.y);
+                ctx.lineTo(vert1.x,vert1.y);
+                ctx.stroke();
+                
+                ctx.moveTo(viewend.x,viewend.y);
+                ctx.lineTo(viewleft.x,viewleft.y);
+                ctx.stroke();
+                
+                ctx.moveTo(viewend.x,viewend.y);
+                ctx.lineTo(viewright.x,viewright.y);
+                ctx.stroke();
                 
             }
             
-            function dkey() {
-                edgeTopLeftX = edgeTopLeftX - 10;
-                edgeTopRightX = edgeTopRightX - 10
-                edgeBottLeftX = edgeBottLeftX - 10
-                edgeBottRightX = edgeBottRightX - 10
-                
-            }
+            setview();
+			render();
             
-            function spacekey() {
-                edgeTopLeftY = edgeTopLeftY + 10;
-                edgeTopRightY = edgeTopRightY + 10
-                edgeBottLeftY = edgeBottLeftY + 10
-                edgeBottRightY = edgeBottRightY + 10
-                
-            }
             
-            function ckey() {
-                edgeTopLeftY = edgeTopLeftY - 10;
-                edgeTopRightY = edgeTopRightY - 10
-                edgeBottLeftY = edgeBottLeftY - 10
-                edgeBottRightY = edgeBottRightY - 10
-                
-            }
-
-			function rightkey() {
-				leftTopX = leftTopX - 1;
-				
-				rightTopX = rightTopX - 1;
-				
-				leftBottX = leftBottX - 1;
-				
-				rightBottX = rightBottX - 1;
-			}
-			
-			function leftkey() {
-				leftTopX = leftTopX + 1;
-				
-				rightTopX = rightTopX + 1;
-				
-				leftBottX = leftBottX + 1;
-				
-				rightBottX = rightBottX + 1;
-			}
-			
-			function upkey() {
-				leftTopY = leftTopY + 1;
-				
-				rightTopY = rightTopY + 1;
-				
-				leftBottY = leftBottY + 1;
-				
-				rightBottY = rightBottY + 1;
-			}
-			
-			function downkey() {
-				leftTopY = leftTopY - 1;
-				
-				rightTopY = rightTopY - 1;
-				
-				leftBottY = leftBottY - 1;
-				
-				rightBottY = rightBottY - 1;
-			}
-			
-			var w;
-			var s;
-			var a;
-			var d;
-			var up;
-			var down;
-            var left;
-            var right;
-            var space;
-            var c;
-			window.addEventListener("keydown", binds, false);
-            
-			function binds(e) {
-            
-               		//test for which key pressed and set coordinates
-                	if (e.keyCode == "40") {
-                    	//go down
-				        down = true;
-                	} else if (e.keyCode == "39") {
-                    	//go right
-				        right = true;
-                	} else if (e.keyCode == "38") {
-                    	//go up
-				        up = true;
-                	} else if (e.keyCode == "37") {
-                    	//go left
-				        left = true;
-                	} else if (e.keyCode == "87") {
-                    	//go left
-				        w = true;
-                	} else if (e.keyCode == "83") {
-                        //go left
-				        s = true;
-                    } else if (e.keyCode == "65") {
-                        //go left
-				        a = true;
-                	} else if (e.keyCode == "68") {
-                        //go left
-				        d = true;
-                	} else if (e.keyCode == "32") {
-                        //go left
-				        space = true;
-                	} else if (e.keyCode == "67") {
-                        //go left
-				        c = true;
-                	}
-            }
-			
-			window.addEventListener("keyup", binds2, false);
-            
-			function binds2(l) {
-            
-               		//test for which key pressed and set coordinates
-                	if (l.keyCode == "40") {
-                        //go down
-				        down = false;
-                	} else if (l.keyCode == "39") {
-                        //go right
-				        right = false;
-                	} else if (l.keyCode == "38") {
-                    	//go up
-				        up = false;
-                	} else if (l.keyCode == "37") {
-                    	//go left
-				        left = false;
-                	} else if (l.keyCode == "87") {
-                        //go left
-				        w = false;
-                	} else if (l.keyCode == "83") {
-                		//go left
-				        s = false;
-                	} else if (l.keyCode == "65") {
-                        //go left
-				        a = false;
-                	} else if (l.keyCode == "68") {
-                        //go left
-				        d = false;
-                	} else if (l.keyCode == "32") {
-                        //go left
-				        space = false;
-                	} else if (l.keyCode == "67") {
-                        //go left
-				        c = false;
-                	}
-            }
-			
-			// context.imageSmoothingEnabled= false
-			//U23 f0R 2d 3N91N3
-			
-//			var mouseX = 0;
-//			var mouseY = 0;
-			
-//			document.onmousemove = function (e) {
-//				
-//  				if (e.movementX > 1) {
-//					dkey();
-//					mouseX = e.movementX;
-//				}
-//				if (e.movementX < 1) {
-//					akey();
-//					mouseX = e.movementX;
-//				}
-//				
-//				if (e.movementY > 1) {
-//					downkey();
-//				}
-//				if (e.movementY < 1) {
-//					upkey();
-//				}
-//			}
-
-//            document.body.onclick = document.body.requestPointerLock || document.body.mozRequestPointerLock || document.body.webkitRequestPointerLock;
 		</script>
-            </body>
+        </body>
 </html>
